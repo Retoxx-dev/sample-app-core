@@ -16,7 +16,7 @@ async def create_superuser(email: str, password: str, is_superuser: bool = False
                 async with get_user_manager_context(user_db) as user_manager:
                     user = await user_manager.create(
                         UserCreate(
-                            email=email, password=password, is_superuser=is_superuser
+                            email=email, password=password, is_superuser=is_superuser, first_name="Super", last_name="User"
                         )
                     )
                     print(f"Super User created")

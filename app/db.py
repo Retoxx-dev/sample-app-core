@@ -4,15 +4,20 @@ from fastapi import Depends
 from fastapi_users.db import SQLAlchemyBaseUserTableUUID, SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy import Column, String
 
 from app.settings import DATABASE_URL
 
 
 class Base(DeclarativeBase):
+    first_name: str
+    last_name: str
     pass
 
 
 class User(SQLAlchemyBaseUserTableUUID, Base):
+    first_name: str = Column(String(length=1024), nullable=False)
+    last_name: str = Column(String(length=1024), nullable=False)
     pass
 
 
