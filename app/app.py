@@ -44,21 +44,23 @@ app.include_router(
     tags=["users"],
 )
 
-@app.get("/authenticated-route")
-async def authenticated_route(user: User = Depends(current_active_user)):
-    return {"message": f"Hello {user.email}!"}
+@app.get("/health", tags=["healthcheck"])
+async def healthcheck_route():
+    return {"status": "ok"}
 
 @app.get(f"{prefix}/users", response_model=list[UserRead], 
     dependencies=[Depends(fastapi_users.current_user(active=True, superuser=True))],
     tags=["users"]
 )
+
 async def list_users(session: AsyncSession = Depends(get_async_session)):
     statement = select(User)
     result = await session.execute(statement)
     return result.scalars().all()
 
-
 @app.on_event("startup")
 async def on_startup():
+    settings.configure_logging()
+    settings.check_env_vars()
     await create_db_and_tables()
     await create_superuser(settings.SUPERUSER_EMAIL, settings.SUPERUSER_PASSWORD, True)

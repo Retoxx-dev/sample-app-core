@@ -4,6 +4,7 @@ from app.db import get_async_session, get_user_db
 from app.schemas import UserCreate
 from app.users import get_user_manager
 from fastapi_users.exceptions import UserAlreadyExists
+from app.settings import logging
 
 get_async_session_context = contextlib.asynccontextmanager(get_async_session)
 get_user_db_context = contextlib.asynccontextmanager(get_user_db)
@@ -19,6 +20,6 @@ async def create_superuser(email: str, password: str, is_superuser: bool = False
                             email=email, password=password, is_superuser=is_superuser, first_name="Super", last_name="User"
                         )
                     )
-                    print(f"Super User created")
+                    logging.info("Super User created")
     except UserAlreadyExists:
-        print(f"Super User already exists, skipping creating it...")
+        logging.info(f"Super User already exists, skipping creating it...")
