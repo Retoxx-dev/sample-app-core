@@ -1,7 +1,16 @@
-import os
+from os import environ
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
-DATABASE_URL = os.environ.get('DATABASE_URL')
+MANDATORY_ENV_VARS = ['SECRET_KEY', 
+                      'DATABASE_URL', 
+                      'SUPERUSER_EMAIL', 
+                      'SUPERUSER_PASSWORD']
 
-SUPERUSER_EMAIL = os.environ.get('SUPERUSER_EMAIL')
-SUPERUSER_PASSWORD = os.environ.get('SUPERUSER_PASSWORD')
+for var in MANDATORY_ENV_VARS:
+    if var not in environ:
+        raise ValueError(f'{var} environment variable is not set')
+
+SECRET_KEY = environ.get('SECRET_KEY')
+DATABASE_URL = environ.get('DATABASE_URL')
+
+SUPERUSER_EMAIL = environ.get('SUPERUSER_EMAIL')
+SUPERUSER_PASSWORD = environ.get('SUPERUSER_PASSWORD')
