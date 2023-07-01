@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import Column, String
 
-from .settings import DATABASE_URL
+from settings import DATABASE_URL
 
 
 class Base(DeclarativeBase):

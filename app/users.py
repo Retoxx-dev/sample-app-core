@@ -8,11 +8,11 @@ from fastapi_users.authentication import (
     BearerTransport,
     JWTStrategy,
 )
-from fastapi_users.db import SQLAlchemyUserDatabase
+from db import SQLAlchemyUserDatabase
 
-from app.db import User, get_user_db
+from db import User, get_user_db
 
-from app.settings import SECRET_KEY
+from settings import SECRET_KEY
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):

@@ -2,14 +2,14 @@ from fastapi import Depends, FastAPI
 
 from sqlalchemy import select
 
-from app.db import User, create_db_and_tables, get_async_session, AsyncSession
-from app.schemas import UserCreate, UserRead, UserUpdate, UserDB
-from app.su import create_superuser
-from app.users import auth_backend, current_active_user, fastapi_users
+from db import User, create_db_and_tables, get_async_session, AsyncSession
+from schemas import UserCreate, UserRead, UserUpdate, UserDB
+from su import create_superuser
+from users import auth_backend, fastapi_users
+
+import settings
 
 from fastapi.middleware.cors import CORSMiddleware
-
-import app.settings as settings
 
 app = FastAPI()
 
@@ -50,9 +50,8 @@ async def healthcheck_route():
 
 @app.get(f"{prefix}/users", response_model=list[UserRead], 
     dependencies=[Depends(fastapi_users.current_user(active=True, superuser=True))],
-    tags=["users"]
+    tags=["users1"]
 )
-
 async def list_users(session: AsyncSession = Depends(get_async_session)):
     statement = select(User)
     result = await session.execute(statement)

@@ -1,9 +1,8 @@
 version: '3.9'
 services:
 
-  users:
-    container_name: users
-    restart: always
+  core:
+    container_name: core
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,7 +14,9 @@ services:
       - db
     volumes:
       - ./app/:/app
-    command: uvicorn app.app:app --host 0.0.0.0 --port 80 --reload
+    environment:
+      - WATCHFILES_FORCE_POLLING=true
+    command: uvicorn app:app --host 0.0.0.0 --port 80 --reload
 
   db:
     container_name: db
