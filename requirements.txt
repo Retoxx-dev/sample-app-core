@@ -3,3 +3,5 @@ fastapi-users[sqlalchemy]
 uvicorn[standard]
 aiosqlite
 asyncpg
+aio-pika==9.1.4
+alembic==1.11.1

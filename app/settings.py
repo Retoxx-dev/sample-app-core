@@ -7,7 +7,10 @@ WARNING_LOGGING_FORMAT = 'WARNING:     %(asctime)s %(message)s'
 MANDATORY_ENV_VARS = ['SECRET_KEY', 
                       'DATABASE_URL', 
                       'SUPERUSER_EMAIL', 
-                      'SUPERUSER_PASSWORD']
+                      'SUPERUSER_PASSWORD',
+                      'RABBITMQ_CONNECTION_STRING',
+                      'RABBITMQ_QUEUE_NAME'
+                      ]
 
 def check_env_vars():
     for var in MANDATORY_ENV_VARS:
@@ -28,3 +31,6 @@ SECRET_KEY = environ.get('SECRET_KEY')
 DATABASE_URL = environ.get('DATABASE_URL')
 SUPERUSER_EMAIL = environ.get('SUPERUSER_EMAIL')
 SUPERUSER_PASSWORD = environ.get('SUPERUSER_PASSWORD')
+
+RABBITMQ_CONNECTION_STRING = environ.get('RABBITMQ_CONNECTION_STRING')
+RABBITMQ_QUEUE_NAME = environ.get('RABBITMQ_QUEUE_NAME')

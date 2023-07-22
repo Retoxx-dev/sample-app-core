@@ -1,5 +1,6 @@
 import uuid
 from typing import Optional
+import json
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, FastAPIUsers, UUIDIDMixin
@@ -12,20 +13,40 @@ from db import SQLAlchemyUserDatabase
 
 from db import User, get_user_db
 
-from settings import SECRET_KEY
+import settings
+
+from rabbit_sender import sender
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
-    reset_password_token_secret = SECRET_KEY
-    verification_token_secret = SECRET_KEY
+    reset_password_token_secret = settings.SECRET_KEY
+    verification_token_secret = settings.SECRET_KEY
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
+        message = {
+            "type": "register",
+            "email_address": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name
+        }
+        message_json = json.dumps(message)
+        await sender.send_message(message_json)
 
     async def on_after_forgot_password(
         self, user: User, token: str, request: Optional[Request] = None
     ):
-        print(f"User {user.id} has forgot their password. Reset token: {token}")
+        print(f"User {user.id} has requested for password reset.")
+        #sender.send_message("reset_password", user.email, user.first_name, user.last_name, token)
+        message = {
+            "type": "reset_password",
+            "email_address": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "token": token
+        }
+        message_json = json.dumps(message)
+        await sender.send_message(message_json)
 
     async def on_after_request_verify(
         self, user: User, token: str, request: Optional[Request] = None
@@ -41,7 +62,7 @@ bearer_transport = BearerTransport(tokenUrl="/v1/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET_KEY, lifetime_seconds=3600)
+    return JWTStrategy(secret=settings.SECRET_KEY, lifetime_seconds=3600)
 
 
 auth_backend = AuthenticationBackend(

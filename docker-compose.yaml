@@ -11,12 +11,15 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
     volumes:
       - ./app/:/app
     environment:
       - WATCHFILES_FORCE_POLLING=true
-    command: uvicorn app:app --host 0.0.0.0 --port 80 --reload
+    # command: uvicorn app:app --host 0.0.0.0 --port 80 --reload
 
   db:
     container_name: db
@@ -29,6 +32,11 @@ services:
       - '5432:5432'
     volumes: 
       - dbdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   adminer:
     container_name: adminer
@@ -36,6 +44,21 @@ services:
     restart: always
     ports:
       - 8080:8080
+
+  rabbitmq:
+    container_name: rabbitmq
+    hostname: rabbitmq
+    image: rabbitmq:3-management
+    env_file:
+      - .env
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: rabbitmq-diagnostics -q ping
+      interval: 30s
+      timeout: 30s
+      retries: 3
 
 volumes:
   dbdata:

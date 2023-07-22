@@ -1,9 +1,10 @@
 from fastapi import Depends, FastAPI
 
 from sqlalchemy import select
+from rabbit_sender import sender
 
-from db import User, create_db_and_tables, get_async_session, AsyncSession
-from schemas import UserCreate, UserRead, UserUpdate, UserDB
+from db import User, get_async_session, AsyncSession
+from schemas import UserCreate, UserRead, UserUpdate
 from su import create_superuser
 from users import auth_backend, fastapi_users
 
@@ -35,7 +36,7 @@ app.include_router(
 )
 app.include_router(
     fastapi_users.get_reset_password_router(),
-    prefix=f"{prefix}/auth",
+    prefix=prefix,
     tags=["auth"],
 )
 app.include_router(
@@ -61,5 +62,8 @@ async def list_users(session: AsyncSession = Depends(get_async_session)):
 async def on_startup():
     settings.configure_logging()
     settings.check_env_vars()
-    await create_db_and_tables()
     await create_superuser(settings.SUPERUSER_EMAIL, settings.SUPERUSER_PASSWORD, True)
+    
+@app.on_event("shutdown")
+async def on_shutdown():
+    await sender.close()
