@@ -19,7 +19,8 @@ jobs:
             with:
               max-line-length: 120
 
-          - name: Run linter and comment PR
-            uses: matias-martini/flake8-pr-comments-action@main
+          - name: Run linters
+            uses: wearerequired/lint-action@v2
             with:
-              github_token: ${{ secrets.GITHUB_TOKEN }}
+              black: true
+              flake8: true
