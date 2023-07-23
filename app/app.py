@@ -51,10 +51,10 @@ async def healthcheck_route():
     return {"status": "ok"}
 
 
-@app.get(f"{prefix}/users", response_model=list[UserRead],
-    dependencies=[Depends(fastapi_users.current_user(active=True, superuser=True))],
-    tags=["users1"]
-)
+@app.get(f"{prefix}/users",
+         response_model=list[UserRead],
+         dependencies=[Depends(fastapi_users.current_user(active=True, superuser=True))],
+         tags=["users1"])
 async def list_users(session: AsyncSession = Depends(get_async_session)):
     statement = select(User)
     result = await session.execute(statement)

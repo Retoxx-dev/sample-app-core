@@ -12,7 +12,7 @@ class RabbitMQSender:
 
     async def connect(self):
         self.connection = await aio_pika.connect_robust(
-            self.connection_string, 
+            self.connection_string,
             heartbeat=60,
             on_connection_lost=self.on_connection_lost
         )

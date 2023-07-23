@@ -1,7 +1,7 @@
 """Added users table
 
 Revision ID: d6abe79eec68
-Revises: 
+Revises:
 Create Date: 2023-07-18 05:22:44.655016
 
 """

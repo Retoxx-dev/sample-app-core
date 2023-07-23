@@ -4,9 +4,9 @@ import logging
 INFO_LOGGING_FORMAT = 'INFO:     %(asctime)s %(message)s'
 WARNING_LOGGING_FORMAT = 'WARNING:     %(asctime)s %(message)s'
 
-MANDATORY_ENV_VARS = ['SECRET_KEY', 
-                      'DATABASE_URL', 
-                      'SUPERUSER_EMAIL', 
+MANDATORY_ENV_VARS = ['SECRET_KEY',
+                      'DATABASE_URL',
+                      'SUPERUSER_EMAIL',
                       'SUPERUSER_PASSWORD',
                       'RABBITMQ_CONNECTION_STRING',
                       'RABBITMQ_QUEUE_NAME'
@@ -19,7 +19,7 @@ def check_env_vars():
             raise ValueError(f'{var} environment variable is not set')
 
 
-def configure_logging():    
+def configure_logging():
     ENV = environ.get('ENV', 'development')
     if ENV == 'production':
         logging.basicConfig(level=logging.INFO, format=WARNING_LOGGING_FORMAT)

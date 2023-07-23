@@ -14,7 +14,7 @@ Base: DeclarativeMeta = declarative_base(metadata=metadata)
 
 
 class User(Base, SQLAlchemyBaseUserTableUUID):
-    id = Column(UUID(as_uuid=True), primary_key=True, index=True, 
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True,
                 nullable=False, unique=True,
                 server_default=text("gen_random_uuid()"))
     first_name: str = Column(String(length=255), nullable=False)
