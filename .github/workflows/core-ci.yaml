@@ -20,5 +20,5 @@ jobs:
           - name: Run linters
             uses: wearerequired/lint-action@v2
             with:
-              autopep8: true
-              autopep8_auto_fix: true
+              flake8: true
+              flake8_args: "--max-line-length=120"
