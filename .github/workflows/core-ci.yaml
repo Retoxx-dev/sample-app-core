@@ -14,10 +14,8 @@ jobs:
             with:
               python-version: 3.9
               
-          - name: Lint with flake8
-            uses: py-actions/flake8@v2
-            with:
-              max-line-length: 120
+          - name: Install autopep8
+            run: pip install autopep8
 
           - name: Run linters
             uses: wearerequired/lint-action@v2
