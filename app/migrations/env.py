@@ -7,15 +7,15 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
+from db import User
+from settings import DATABASE_URL
+
 
 config = context.config
 fileConfig(config.config_file_name)
 
-
-from db import User
 target_metadata = User.metadata
 
-from settings import DATABASE_URL
 
 def run_migrations_offline() -> None:
     context.configure(

@@ -12,10 +12,12 @@ MANDATORY_ENV_VARS = ['SECRET_KEY',
                       'RABBITMQ_QUEUE_NAME'
                       ]
 
+
 def check_env_vars():
     for var in MANDATORY_ENV_VARS:
         if var not in environ:
             raise ValueError(f'{var} environment variable is not set')
+
 
 def configure_logging():    
     ENV = environ.get('ENV', 'development')
@@ -25,7 +27,7 @@ def configure_logging():
     if ENV == 'development':
         logging.basicConfig(level=logging.INFO, format=INFO_LOGGING_FORMAT)
         logging.info('Running in development mode')
-        
+
 
 SECRET_KEY = environ.get('SECRET_KEY')
 DATABASE_URL = environ.get('DATABASE_URL')
