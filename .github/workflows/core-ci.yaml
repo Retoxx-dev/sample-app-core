@@ -17,4 +17,9 @@ jobs:
           - name: Lint with flake8
             uses: py-actions/flake8@v2
             with:
-              max-line-length: 120 
+              max-line-length: 120
+
+          - name: Run linter and comment PR
+            uses: matias-martini/flake8-pr-comments-action@main
+            with:
+              github_token: ${{ secrets.GITHUB_TOKEN }}
