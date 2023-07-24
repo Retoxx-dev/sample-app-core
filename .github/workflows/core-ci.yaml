@@ -3,18 +3,22 @@ name: FastAPI Core CI
 on: [pull_request]
 
 jobs:
-    lint:
-      runs-on: ubuntu-latest
-      steps:
-          - name: Checkout
-            uses: actions/checkout@v3
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-          - name: Set up Python 3.9
-            uses: actions/setup-python@v4
-            with:
-              python-version: 3.9
-              
-          - name: Lint with flake8
-            uses: py-actions/flake8@v2
-            with:
-              max-line-length: 120 
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          
+      - name: Install autopep8
+        run: pip install flake8
+
+      - name: Run linter
+        uses: wearerequired/lint-action@v2
+        with:
+          flake8: true
+          flake8_args: "--max-line-length=120" 

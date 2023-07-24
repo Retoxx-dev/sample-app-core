@@ -37,7 +37,6 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"User {user.id} has requested for password reset.")
-        #sender.send_message("reset_password", user.email, user.first_name, user.last_name, token)
         message = {
             "type": "reset_password",
             "email_address": user.email,
