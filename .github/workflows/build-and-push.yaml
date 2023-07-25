@@ -8,7 +8,7 @@ env:
     CONTAINER_REGISTRY_URI: acrsampleapp001.azurecr.io
 
 jobs:
-  lint:
+  BuildAndPush:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
