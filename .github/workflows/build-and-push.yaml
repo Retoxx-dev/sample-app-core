@@ -27,8 +27,3 @@ jobs:
 
       - name: Push Core Docker image
         run: docker push $CONTAINER_REGISTRY_URI/core:prod
-        
-
-
-
-        
