@@ -25,7 +25,7 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
         message = {
-            "type": "register",
+            "type": "welcome",
             "email_address": user.email,
             "first_name": user.first_name,
             "last_name": user.last_name

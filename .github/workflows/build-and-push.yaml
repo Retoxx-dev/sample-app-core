@@ -5,7 +5,7 @@ on:
         branches: [ main ]
 
 env:
-    CONTAINER_REGISTRY_URI: acrsampleapp001.azurecr.io
+    CONTAINER_REGISTRY_URI: acrsampleappneu.azurecr.io
 
 jobs:
   BuildAndPush:
