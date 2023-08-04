@@ -15,7 +15,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 prefix = "/v1"
-origins = ["http://localhost:3000"]
+origins = ["http://localhost:3000", "https://dziedzic.me"]
 
 
 app.add_middleware(
