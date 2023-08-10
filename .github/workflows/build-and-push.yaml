@@ -15,7 +15,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Build Core Docker image
-        run: docker build -t $CONTAINER_REGISTRY_URI/core:prod -f ./Dockerfile .
+        run: docker build -t $CONTAINER_REGISTRY_URI/core:dev -f ./Dockerfile .
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -26,4 +26,4 @@ jobs:
         run: az acr login --name $CONTAINER_REGISTRY_URI
 
       - name: Push Core Docker image
-        run: docker push $CONTAINER_REGISTRY_URI/core:prod
+        run: docker push $CONTAINER_REGISTRY_URI/core:dev
