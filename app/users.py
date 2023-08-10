@@ -37,7 +37,6 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         """
 
         await self.validate_names(user_create.first_name, user_create.last_name)
-        settings.logging.info(f"Validated names: {user_create}")
 
         await self.validate_password(user_create.password, user_create)
 
