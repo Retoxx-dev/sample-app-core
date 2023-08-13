@@ -1,0 +1,33 @@
+---
+name: Core Build and Push Docker Prod Image
+on:
+  push:
+    branches: [ main ]
+  
+env:
+  CONTAINER_REGISTRY_URI: acrsampleappneu.azurecr.io
+  
+jobs:
+  BuildAndPush:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Add SHORT_SHA env property with commit short sha
+        run: echo "SHORT_SHA=`git rev-parse --short ${{ github.sha }} | cut -c1-8`" >> $GITHUB_ENV
+
+      - name: Build Core Docker Prod Image
+        run: docker build -t $CONTAINER_REGISTRY_URI/core:prod-${SHORT_SHA} -f ./Dockerfile .
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Login to Azure Container Registry
+        run: az acr login --name $CONTAINER_REGISTRY_URI
+
+      - name: Push Core Docker Prod Image
+        run: docker push $CONTAINER_REGISTRY_URI/core:prod-${SHORT_SHA}
+  
