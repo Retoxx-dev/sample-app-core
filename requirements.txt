@@ -5,3 +5,4 @@ aiosqlite
 asyncpg
 aio-pika==9.1.4
 alembic==1.11.1
+pyotp==2.9.0

@@ -19,6 +19,10 @@ import settings
 
 from rabbit_sender import sender
 
+import pyotp
+
+from datetime import datetime
+
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
     reset_password_token_secret = settings.SECRET_KEY
@@ -128,6 +132,66 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         self, user: User, token: str, request: Optional[Request] = None
     ):
         print(f"Verification requested for user {user.id}. Verification token: {token}")
+
+    async def disable_otp(
+        self, user: User, request: Optional[Request] = None
+    ):
+        try:
+            await self.get_by_email(user.email)
+        except exceptions.UserNotExists():
+            raise exceptions.UserNotExists()
+        updated_user = await self.user_db.update(user, {"otp_enabled": False, "otp_verified": False,
+                                                        "otp_base32": "", "otp_auth_url": "",
+                                                        "otp_enabled_at": None})
+        return updated_user
+
+    async def generate_otp(
+        self, user: User, request: Optional[Request] = None
+    ):
+        try:
+            await self.get_by_email(user.email)
+        except exceptions.UserNotExists:
+            raise exceptions.UserNotExists()
+        otp_base32 = pyotp.random_base32()
+        otp_auth_url = pyotp.totp.TOTP(otp_base32).provisioning_uri(name=user.email, issuer_name="test")
+        updated_user = await self.user_db.update(user, {"otp_auth_url": otp_auth_url, "otp_base32": otp_base32})
+        return updated_user
+
+    async def enable_otp(
+        self, user: User, token: str, request: Optional[Request] = None
+    ):
+        try:
+            await self.get_by_email(user.email)
+        except exceptions.UserNotExists:
+            raise exceptions.UserNotExists()
+        totp = pyotp.TOTP(user.otp_base32)
+        print(totp.now())
+        print(f"Token: {token}")
+        if not totp.verify(token):
+            raise HTTPException(status_code=400,
+                                detail={
+                                    "code": ErrorCode.INVALID_OTP_TOKEN,
+                                    "reason": "Invalid OTP token"
+                                    })
+        updated_user = await self.user_db.update(user, {"otp_verified": True, "otp_enabled": True,
+                                                        "otp_enabled_at": datetime.now()})
+        return updated_user
+
+    async def validate_otp(
+        self, token, user: User, request: Optional[Request] = None
+    ):
+        try:
+            await self.get_by_email(user.email)
+        except exceptions.UserNotExists:
+            raise exceptions.UserNotExists()
+        totp = pyotp.TOTP(user.otp_base32)
+        if not totp.verify(otp=token, valid_window=1):
+            raise HTTPException(status_code=400,
+                                detail={
+                                    "code": ErrorCode.INVALID_OTP_TOKEN,
+                                    "reason": "Invalid OTP token"
+                                    })
+        return {'otp_valid': True}
 
 
 async def get_user_manager(user_db: SQLAlchemyUserDatabase = Depends(get_user_db)):

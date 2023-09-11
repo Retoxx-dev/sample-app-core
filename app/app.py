@@ -1,12 +1,12 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Request
 
 from sqlalchemy import select
 from rabbit_sender import sender
 
 from db import User, get_async_session, AsyncSession
-from schemas import UserCreate, UserRead, UserUpdate
+from schemas import UserCreate, UserRead, UserUpdate, MFAToken
 from su import create_superuser
-from users import auth_backend, fastapi_users
+from users import auth_backend, fastapi_users, current_active_user, get_user_manager
 
 import settings
 
@@ -59,6 +59,30 @@ async def list_users(session: AsyncSession = Depends(get_async_session)):
     statement = select(User)
     result = await session.execute(statement)
     return result.scalars().all()
+
+
+@app.post(f"{prefix}/otp/disable", response_model=UserRead, tags=["otp"])
+async def disable_otp(request: Request, user=Depends(current_active_user),
+                      user_manager=Depends(get_user_manager)):
+    return await user_manager.disable_otp(user)
+
+
+@app.post(f"{prefix}/otp/generate", response_model=UserRead, tags=["otp"])
+async def generate_otp(request: Request, user=Depends(current_active_user),
+                       user_manager=Depends(get_user_manager)):
+    return await user_manager.generate_otp(user)
+
+
+@app.post(f"{prefix}/otp/enable", response_model=UserRead, tags=["otp"])
+async def enable_otp(request: Request, payload: MFAToken, user=Depends(current_active_user),
+                     user_manager=Depends(get_user_manager)):
+    return await user_manager.enable_otp(user, payload.token)
+
+
+@app.post(f"{prefix}/otp/validate", tags=["otp"])
+async def validate_otp(request: Request, payload: MFAToken, user=Depends(current_active_user),
+                       user_manager=Depends(get_user_manager)):
+    return await user_manager.validate_otp(payload.token, user)
 
 
 @app.on_event("startup")
