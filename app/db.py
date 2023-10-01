@@ -19,6 +19,10 @@ class User(Base, SQLAlchemyBaseUserTableUUID):
                 server_default=text("gen_random_uuid()"))
     first_name: str = Column(String(length=255), nullable=False)
     last_name: str = Column(String(length=255), nullable=False)
+    # created_at: datetime = Column(DateTime, nullable=False, default=datetime.utcnow)
+    # updated_at: datetime = Column(DateTime, nullable=False, onupdate=func.now())
+
+    profile_picture_path: str = Column(String(length=255), nullable=True)
 
 
 engine = create_async_engine(DATABASE_URL)
