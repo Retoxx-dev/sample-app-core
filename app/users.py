@@ -1,5 +1,5 @@
 import uuid
-from typing import List, Optional, Union
+from typing import Optional, Union
 import json
 
 from fastapi import Depends, Request, HTTPException
@@ -18,8 +18,6 @@ from db import User, get_user_db
 import settings
 
 from rabbit_sender import sender
-
-from datetime import datetime
 
 
 class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):

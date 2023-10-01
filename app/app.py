@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI, HTTPException, Request, UploadFile, File
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, File
 
 from sqlalchemy import select
 from common import ErrorCode
