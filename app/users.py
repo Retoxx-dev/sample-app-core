@@ -148,6 +148,15 @@ class UserManager(UUIDIDMixin, BaseUserManager[User, uuid.UUID]):
         updated_user = await self.user_db.update(user, {"profile_picture_path": profile_picture_file_name})
         return updated_user
 
+    async def check_if_profile_picture_exists(
+        self, user: User, request: Optional[Request] = None
+    ):
+        try:
+            await self.get_by_email(user.email)
+        except exceptions.UserNotExists:
+            raise exceptions.UserNotExists()
+        return user.profile_picture_path is not None
+
     # async def disable_otp(
     #     self, user: User, request: Optional[Request] = None
     # ):

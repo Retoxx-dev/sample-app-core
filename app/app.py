@@ -90,6 +90,10 @@ async def list_users(session: AsyncSession = Depends(get_async_session)):
 @app.get(f"{prefix}/get_profile_picture", tags=["users"], response_model=UserProfilePicture)
 async def get_profile_picture_url(user=Depends(current_active_user),
                                   user_manager=Depends(get_user_manager)):
+
+    if not await user_manager.check_if_profile_picture_exists(user):
+        return {"profile_picture_path": "Default"}
+
     profile_picture_path = await user_manager.get_profile_picture_path(user)
     get_sas_token = await FileManager().get_file_with_sas(user.id, profile_picture_path)
     signed_url = f"{settings.STORAGE_ACCOUNT_URL}/profiles/{user.id}/{profile_picture_path}?{get_sas_token}"
