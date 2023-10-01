@@ -6,3 +6,6 @@ asyncpg
 aio-pika==9.1.4
 alembic==1.11.1
 pyotp==2.9.0
+python-multipart
+azure-storage-blob==12.18.1
+aiohttp==3.8.5
